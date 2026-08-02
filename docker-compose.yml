@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: speedexpress_app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      CI_ENVIRONMENT: production
+      app.baseURL: "${APP_URL:-http://localhost:8080/}"
+      database.default.hostname: db
+      database.default.database: ${DB_DATABASE:-speed_boat_db}
+      database.default.username: ${DB_USERNAME:-speed_user}
+      database.default.password: ${DB_PASSWORD:-speed_pass_secret}
+      database.default.DBDriver: MySQLi
+      database.default.port: 3306
+      MIDTRANS_IS_PRODUCTION: "false"
+      MIDTRANS_SERVER_KEY: "${MIDTRANS_SERVER_KEY}"
+      MIDTRANS_CLIENT_KEY: "${MIDTRANS_CLIENT_KEY}"
+      DB_AUTO_MIGRATE: "true"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: speedexpress_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_pass_secret}
+      MYSQL_DATABASE: ${DB_DATABASE:-speed_boat_db}
+      MYSQL_USER: ${DB_USERNAME:-speed_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-speed_pass_secret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

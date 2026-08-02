@@ -1,0 +1,292 @@
+/* ==========================================================================
+   CITITRANS-INSPIRED SPEED BOAT THEME ENGINE (BOOTSTRAP 5 EXTENSION)
+   ========================================================================== */
+
+:root {
+    --cititrans-navy: #0F2240;
+    --cititrans-blue: #0D6EFD;
+    --cititrans-cyan: #00C9A7;
+    --cititrans-accent: #FF9F43;
+    --cititrans-bg: #F4F7FA;
+    --cititrans-card-bg: #FFFFFF;
+    --cititrans-text: #2D3748;
+    --cititrans-text-muted: #718096;
+    --cititrans-shadow: 0 12px 32px rgba(15, 34, 64, 0.08);
+    --cititrans-soft-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+    --cititrans-radius: 16px;
+    --cititrans-pill-radius: 50px;
+}
+
+[data-bs-theme="dark"] {
+    --cititrans-bg: #0B132B;
+    --cititrans-card-bg: #1C2541;
+    --cititrans-text: #F8F9FA;
+    --cititrans-text-muted: #A0AEC0;
+    --cititrans-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    --cititrans-soft-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+body {
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--cititrans-bg);
+    color: var(--cititrans-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Glassmorphism & Header */
+.cititrans-navbar {
+    background: rgba(15, 34, 64, 0.95);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.cititrans-brand {
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-size: 1.4rem;
+    color: #FFFFFF !important;
+}
+
+.cititrans-brand span {
+    color: var(--cititrans-cyan);
+}
+
+/* Hero Section */
+.hero-banner {
+    background: linear-gradient(135deg, var(--cititrans-navy) 0%, #1A365D 50%, #0D6EFD 100%);
+    color: #FFFFFF;
+    padding: 70px 0 100px 0;
+    position: relative;
+    border-radius: 0 0 32px 32px;
+    overflow: hidden;
+}
+
+.hero-banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23F4F7FA' fill-opacity='1' d='M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,181.3C960,181,1056,139,1152,122.7C1248,107,1344,117,1392,122.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat bottom;
+    background-size: cover;
+}
+
+/* Search Box Container (Cititrans Floating Box) */
+.search-card-container {
+    margin-top: -60px;
+    position: relative;
+    z-index: 10;
+}
+
+.cititrans-card {
+    background: var(--cititrans-card-bg);
+    border-radius: var(--cititrans-radius);
+    box-shadow: var(--cititrans-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cititrans-card:hover {
+    box-shadow: 0 16px 40px rgba(15, 34, 64, 0.12);
+}
+
+.search-input-group {
+    background: var(--cititrans-bg);
+    border-radius: 12px;
+    padding: 8px 14px;
+    border: 1px solid rgba(0,0,0,0.06);
+}
+
+.search-input-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--cititrans-text-muted);
+    margin-bottom: 2px;
+}
+
+.search-input-group select,
+.search-input-group input {
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    color: var(--cititrans-text);
+    padding: 0;
+}
+
+.search-input-group select:focus,
+.search-input-group input:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+/* Interactive Seat Map Styling */
+.boat-layout-container {
+    background: #EBF3FA;
+    border: 3px solid #0F2240;
+    border-radius: 60px 60px 20px 20px;
+    padding: 40px 20px 20px 20px;
+    max-width: 380px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: var(--cititrans-shadow);
+}
+
+.boat-cockpit {
+    background: #0F2240;
+    color: #FFFFFF;
+    text-align: center;
+    border-radius: 40px 40px 10px 10px;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+}
+
+.seat-grid-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.seat-item {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    user-select: none;
+    position: relative;
+    border: 2px solid transparent;
+}
+
+.seat-item.available {
+    background: #FFFFFF;
+    color: #0F2240;
+    border-color: #CBD5E1;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.seat-item.available:hover {
+    background: #0D6EFD;
+    color: #FFFFFF;
+    border-color: #0D6EFD;
+    transform: scale(1.1);
+}
+
+.seat-item.selected {
+    background: #00C9A7 !important;
+    color: #FFFFFF !important;
+    border-color: #00B395 !important;
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0, 201, 167, 0.4);
+}
+
+.seat-item.booked, .seat-item.other_locked {
+    background: #E2E8F0;
+    color: #94A3B8;
+    border-color: #CBD5E1;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.seat-item.vip {
+    border-color: #FF9F43;
+}
+
+.aisle-gap {
+    width: 30px;
+    text-align: center;
+    color: #94A3B8;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+/* Skeleton Loading */
+.skeleton {
+    background: linear-gradient(90deg, #E2E8F0 25%, #EDF2F7 50%, #E2E8F0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Schedule Card (Cititrans Style) */
+.schedule-card {
+    border-left: 5px solid var(--cititrans-blue);
+    transition: transform 0.2s ease;
+}
+
+.schedule-card:hover {
+    transform: translateY(-3px);
+}
+
+.time-badge {
+    background: rgba(13, 110, 253, 0.1);
+    color: var(--cititrans-blue);
+    font-weight: 800;
+    font-size: 1.1rem;
+    padding: 6px 14px;
+    border-radius: var(--cititrans-pill-radius);
+}
+
+/* Buttons */
+.btn-cititrans {
+    background: linear-gradient(135deg, var(--cititrans-navy) 0%, #1A365D 100%);
+    color: #FFFFFF;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 12px 24px;
+    border: none;
+    box-shadow: 0 4px 14px rgba(15, 34, 64, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-cititrans:hover {
+    background: linear-gradient(135deg, #1A365D 0%, #0D6EFD 100%);
+    color: #FFFFFF;
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.35);
+    transform: translateY(-2px);
+}
+
+.btn-cititrans-accent {
+    background: linear-gradient(135deg, #00C9A7 0%, #00B395 100%);
+    color: #FFFFFF;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 12px 24px;
+    border: none;
+}
+
+/* E-Ticket Box */
+.ticket-container {
+    background: #FFFFFF;
+    border-radius: 20px;
+    border: 2px dashed #CBD5E1;
+    position: relative;
+    overflow: hidden;
+}
+
+.ticket-container::before, .ticket-container::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 24px;
+    height: 24px;
+    background: var(--cititrans-bg);
+    border-radius: 50%;
+}
+.ticket-container::before { left: -12px; }
+.ticket-container::after { right: -12px; }
