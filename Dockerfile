@@ -17,8 +17,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mysqli gd zip intl mbstring xml opcache \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+# Enable Apache mod_rewrite & add Port 8080 support
+RUN a2enmod rewrite && sed -i 's/Listen 80/Listen 80\nListen 8080/' /etc/apache2/ports.conf
 
 # Copy Apache config pointing to /public
 COPY .docker/apache-ci4.conf /etc/apache2/sites-available/000-default.conf
@@ -41,7 +41,10 @@ RUN chown -R www-data:www-data /var/www/html \
 COPY .docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-EXPOSE 80
+EXPOSE 80 8080
+
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+  CMD curl -f http://localhost/ || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["apache2-foreground"]

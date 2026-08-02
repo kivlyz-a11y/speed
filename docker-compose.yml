@@ -8,10 +8,11 @@ services:
     container_name: speedexpress_app
     restart: always
     ports:
-      - "8080:80"
+      - "80:80"
+      - "8080:8080"
     environment:
       CI_ENVIRONMENT: production
-      app.baseURL: "${APP_URL:-http://localhost:8080/}"
+      app.baseURL: "${APP_URL:-http://localhost/}"
       database.default.hostname: db
       database.default.database: ${DB_DATABASE:-speed_boat_db}
       database.default.username: ${DB_USERNAME:-speed_user}

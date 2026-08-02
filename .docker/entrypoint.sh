@@ -11,11 +11,23 @@ mkdir -p /var/www/html/writable/cache \
 chown -R www-data:www-data /var/www/html/writable
 chmod -R 777 /var/www/html/writable
 
-# Execute migrations if DB_AUTO_MIGRATE is true
+# Wait for DB connection gracefully if DB_AUTO_MIGRATE is true
 if [ "$DB_AUTO_MIGRATE" = "true" ]; then
-    echo "Running database migrations..."
-    php spark migrate --all || true
-    echo "Database migrations completed."
+    echo "Checking database connection..."
+    for i in {1..30}; do
+        if php -r "
+            \$host = getenv('database.default.hostname') ?: getenv('database_default_hostname') ?: getenv('DB_HOST') ?: 'db';
+            \$port = getenv('database.default.port') ?: getenv('database_default_port') ?: getenv('DB_PORT') ?: 3306;
+            \$conn = @fsockopen(\$host, \$port, \$errno, \$errstr, 2);
+            if (\$conn) { fclose(\$conn); exit(0); } else { exit(1); }
+        "; then
+            echo "Database connection established!"
+            php spark migrate --all || true
+            break
+        fi
+        echo "Waiting for database container... ($i/30)"
+        sleep 2
+    done
 fi
 
 exec "$@"
