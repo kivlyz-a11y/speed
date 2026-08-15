@@ -8,11 +8,11 @@
     <div class="cititrans-card p-4 mb-4 bg-primary text-white">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
-                <span class="badge bg-white text-primary fw-bold mb-2"><i class="bi bi-water me-1"></i> PENYEBERANGAN SPEED BOAT</span>
+                <span class="badge bg-warning text-dark fw-bold mb-2"><i class="bi bi-compass me-1"></i> PELAYARAN SPEED BOAT BMK</span>
                 <h3 class="fw-bold mb-1">
                     <?= esc($trips[0]['origin_name'] ?? 'Kota Asal') ?> &rarr; <?= esc($trips[0]['destination_name'] ?? 'Kota Tujuan') ?>
                 </h3>
-                <p class="mb-0 text-white-50"><i class="bi bi-calendar3 me-1"></i> Keberangkatan: <?= date('d F Y', strtotime($search_date)) ?> | <?= esc($search_pass) ?> Penumpang</p>
+                <p class="mb-0 text-white-50"><i class="bi bi-calendar3 me-1"></i> Keberangkatan: <?= date('d F Y', strtotime($search_date)) ?> | <?= esc($search_pass) ?> Penumpang (<?= esc($search_male_pass ?? 1) ?> Laki-laki, <?= esc($search_female_pass ?? 0) ?> Perempuan)</p>
             </div>
             <a href="<?= base_url('/') ?>" class="btn btn-outline-light rounded-pill px-4 btn-sm fw-bold align-self-start align-self-md-center">Ubah Pencarian</a>
         </div>

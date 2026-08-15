@@ -45,10 +45,15 @@ class BookingController extends BaseController
      */
     public function search()
     {
-        $originId      = (int) $this->request->getGet('origin_id');
-        $destinationId = (int) $this->request->getGet('destination_id');
-        $date          = $this->request->getGet('date') ?? date('Y-m-d');
-        $passengers    = (int) ($this->request->getGet('passengers') ?? 1);
+        $originId          = (int) $this->request->getGet('origin_id');
+        $destinationId     = (int) $this->request->getGet('destination_id');
+        $date              = $this->request->getGet('date') ?? date('Y-m-d');
+        $malePassengers    = (int) ($this->request->getGet('male_passengers') ?? 1);
+        $femalePassengers  = (int) ($this->request->getGet('female_passengers') ?? 0);
+        $passengers        = (int) ($this->request->getGet('passengers') ?? ($malePassengers + $femalePassengers));
+        if ($passengers < 1) {
+            $passengers = max(1, $malePassengers + $femalePassengers);
+        }
 
         $trips = [];
         if ($originId && $destinationId) {
@@ -65,13 +70,15 @@ class BookingController extends BaseController
 
         $locationModel = new \App\Models\LocationModel();
         return view('front/search_results', [
-            'title'          => 'Hasil Pencarian Jadwal Speed Boat',
-            'trips'          => $trips,
-            'locations'      => $locationModel->findAll(),
-            'search_origin'  => $originId,
-            'search_dest'    => $destinationId,
-            'search_date'    => $date,
-            'search_pass'    => $passengers
+            'title'              => 'Hasil Pencarian Jadwal Speed Boat - BMK (Benuanta Mutiara Khatulistiwa)',
+            'trips'              => $trips,
+            'locations'          => $locationModel->findAll(),
+            'search_origin'      => $originId,
+            'search_dest'        => $destinationId,
+            'search_date'        => $date,
+            'search_pass'        => $passengers,
+            'search_male_pass'   => $malePassengers,
+            'search_female_pass' => $femalePassengers
         ]);
     }
 
