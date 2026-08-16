@@ -146,24 +146,28 @@ class BookingController extends BaseController
         $userId    = session()->get('user_id');
 
         $bookingData = [
-            'user_id'        => $userId,
-            'trip_id'        => (int) $json['trip_id'],
-            'customer_name'  => trim($json['customer_name']),
-            'customer_email' => trim($json['customer_email']),
-            'customer_phone' => trim($json['customer_phone']),
-            'voucher_code'   => trim($json['voucher_code'] ?? ''),
-            'session_id'     => $sessionId,
-            'booking_type'   => 'online'
+            'user_id'         => $userId,
+            'trip_id'         => (int) $json['trip_id'],
+            'customer_name'   => trim($json['customer_name']),
+            'customer_gender' => $json['customer_gender'] ?? 'male',
+            'customer_nik'    => !empty($json['customer_nik']) ? trim($json['customer_nik']) : null,
+            'customer_email'  => trim($json['customer_email']),
+            'customer_phone'  => trim($json['customer_phone']),
+            'voucher_code'    => trim($json['voucher_code'] ?? ''),
+            'session_id'      => $sessionId,
+            'booking_type'    => 'online'
         ];
 
         $passengersData = [];
         foreach ($json['passengers'] as $p) {
             $passengersData[] = [
-                'seat_id'         => (int) $p['seat_id'],
-                'seat_number'     => $p['seat_number'],
-                'passenger_name'  => trim($p['name']),
-                'passenger_phone' => trim($p['phone'] ?? $json['customer_phone']),
-                'price'           => (float) $p['price']
+                'seat_id'          => (int) ($p['seat_id'] ?? 0),
+                'seat_number'      => $p['seat_number'] ?? 'Belum Dipilih',
+                'passenger_name'   => trim($p['name']),
+                'passenger_gender' => $p['gender'] ?? 'male',
+                'passenger_nik'    => !empty($p['nik']) ? trim($p['nik']) : null,
+                'passenger_phone'  => trim($p['phone'] ?? $json['customer_phone']),
+                'price'            => (float) $p['price']
             ];
         }
 
@@ -179,5 +183,58 @@ class BookingController extends BaseController
         }
 
         return $this->response->setJSON(['success' => false, 'message' => $result['message']]);
+    }
+
+    /**
+     * Manage Booking View (Cek / Kelola Pesanan)
+     */
+    public function manageView()
+    {
+        return view('front/booking_manage', [
+            'title' => 'Kelola Pesanan & Cek E-Ticket Tiket Speed Boat'
+        ]);
+    }
+
+    /**
+     * Search booking by booking code & email/phone
+     */
+    public function manageSearch()
+    {
+        $code    = strtoupper(trim($this->request->getPost('booking_code')));
+        $contact = trim($this->request->getPost('contact'));
+
+        $bookingModel = new \App\Models\BookingModel();
+        $booking = $bookingModel->where('booking_code', $code)->first();
+
+        if (!$booking) {
+            return redirect()->back()->with('error', 'Kode pesanan ' . $code . ' tidak ditemukan.');
+        }
+
+        if (!empty($contact) && (stripos($booking['customer_email'], $contact) === false && stripos($booking['customer_phone'], $contact) === false)) {
+            return redirect()->back()->with('error', 'Nomor HP atau Email tidak cocok dengan kode pesanan ini.');
+        }
+
+        return redirect()->to('booking/success/' . $code);
+    }
+
+    /**
+     * Assign seats after payment
+     */
+    public function assignSeats()
+    {
+        $json = $this->request->getJSON(true);
+        if (empty($json)) {
+            $json = $this->request->getPost();
+        }
+
+        $bookingCode = trim($json['booking_code'] ?? '');
+        $assignments = (array) ($json['assignments'] ?? []);
+
+        if (!$bookingCode || empty($assignments)) {
+            return $this->response->setJSON(['success' => false, 'message' => 'Data pemilihan kursi tidak lengkap.']);
+        }
+
+        $res = $this->bookingService->assignSeatsAfterPayment($bookingCode, $assignments);
+        return $this->response->setJSON($res);
     }
 }

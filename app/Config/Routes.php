@@ -11,6 +11,9 @@ $routes->get('booking/seat-map/(:num)', 'Front\BookingController::seatMap/$1');
 $routes->get('api/routes/destinations/(:num)', 'Front\BookingController::getDestinationsByOrigin/$1');
 $routes->post('booking/lock-seat', 'Front\BookingController::lockSeat');
 $routes->post('booking/store', 'Front\BookingController::store');
+$routes->get('booking/manage', 'Front\BookingController::manageView');
+$routes->post('booking/manage/search', 'Front\BookingController::manageSearch');
+$routes->post('booking/assign-seats', 'Front\BookingController::assignSeats');
 
 // Payment Routes
 $routes->get('payment/checkout/(:segment)', 'Front\PaymentController::checkout/$1');
@@ -66,6 +69,8 @@ $routes->group('admin', function ($routes) {
     // Master Data - Schedules
     $routes->get('master/schedules', 'Admin\MasterController::schedules');
     $routes->post('master/schedules/store', 'Admin\MasterController::storeSchedule');
+    $routes->post('master/schedules/update/(:num)', 'Admin\MasterController::updateSchedule/$1');
+    $routes->get('master/schedules/delete/(:num)', 'Admin\MasterController::deleteSchedule/$1');
 
     // Check-In Scanner & Boarding Manifest
     $routes->get('checkin/scanner', 'Admin\CheckInController::scanner');

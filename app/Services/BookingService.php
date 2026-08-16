@@ -37,6 +37,10 @@ class BookingService
     public function searchTrips(int $originId, int $destinationId, string $date, int $passengers = 1)
     {
         $db = \Config\Database::connect();
+        
+        // Auto-generate trips for requested date if not generated yet
+        $this->ensureTripsExistForDate($date);
+
         $builder = $db->table('trips t')
             ->select('t.*, r.origin_location_id, r.destination_location_id, r.distance_nautical_miles, r.estimated_duration_minutes, 
                       sb.name as boat_name, sb.code as boat_code, sb.capacity, sb.seat_layout_json,
@@ -56,6 +60,47 @@ class BookingService
             ->orderBy('t.departure_time', 'ASC');
 
         return $builder->get()->getResultArray();
+    }
+
+    /**
+     * Ensure trips exist in database for requested date based on active master schedules
+     */
+    public function ensureTripsExistForDate(string $date)
+    {
+        $db = \Config\Database::connect();
+        
+        $schedules = $db->table('schedules sch')
+            ->select('sch.*, sb.capacity')
+            ->join('speed_boats sb', 'sb.id = sch.speed_boat_id')
+            ->join('routes r', 'r.id = sch.route_id')
+            ->where('sch.status', 'active')
+            ->where('sch.deleted_at IS NULL')
+            ->where('r.status', 'active')
+            ->where('r.deleted_at IS NULL')
+            ->get()->getResultArray();
+
+        foreach ($schedules as $sch) {
+            $existing = $db->table('trips')
+                ->where('schedule_id', $sch['id'])
+                ->where('trip_date', $date)
+                ->countAllResults();
+
+            if ($existing === 0) {
+                $tripCode = 'TRIP-' . date('Ymd', strtotime($date)) . '-' . str_pad($sch['id'], 3, '0', STR_PAD_LEFT);
+                $db->table('trips')->insert([
+                    'schedule_id'     => $sch['id'],
+                    'trip_code'       => $tripCode,
+                    'trip_date'       => $date,
+                    'speed_boat_id'   => $sch['speed_boat_id'],
+                    'captain_id'      => $sch['captain_id'] ?: 1,
+                    'departure_time'  => $sch['departure_time'],
+                    'arrival_time'    => $sch['arrival_time'],
+                    'adult_price'     => $sch['adult_price'],
+                    'available_seats' => $sch['capacity'] ?? 30,
+                    'status'          => 'scheduled'
+                ]);
+            }
+        }
     }
 
     /**
@@ -222,6 +267,8 @@ class BookingService
             'trip_id'          => $bookingData['trip_id'],
             'booking_type'     => $bookingData['booking_type'] ?? 'online',
             'customer_name'    => $bookingData['customer_name'],
+            'customer_gender'  => $bookingData['customer_gender'] ?? 'male',
+            'customer_nik'     => $bookingData['customer_nik'] ?? null,
             'customer_email'   => $bookingData['customer_email'],
             'customer_phone'   => $bookingData['customer_phone'],
             'total_passengers' => $totalPassengers,
@@ -235,14 +282,19 @@ class BookingService
         ]);
 
         foreach ($passengersData as $p) {
+            $seatId  = !empty($p['seat_id']) ? (int) $p['seat_id'] : null;
+            $seatNum = (!empty($p['seat_number']) && $p['seat_number'] !== '0') ? $p['seat_number'] : 'Belum Dipilih';
+
             $this->passengerModel->insert([
-                'booking_id'      => $bookingId,
-                'seat_id'         => $p['seat_id'],
-                'passenger_name'  => $p['passenger_name'],
-                'passenger_phone' => $p['passenger_phone'] ?? $bookingData['customer_phone'],
-                'passenger_type'  => $p['passenger_type'] ?? 'adult',
-                'seat_number'     => $p['seat_number'],
-                'price'           => $p['price']
+                'booking_id'       => $bookingId,
+                'seat_id'          => $seatId,
+                'passenger_name'   => $p['passenger_name'],
+                'passenger_gender' => $p['passenger_gender'] ?? 'male',
+                'passenger_nik'    => $p['passenger_nik'] ?? null,
+                'passenger_phone'  => $p['passenger_phone'] ?? $bookingData['customer_phone'],
+                'passenger_type'   => $p['passenger_type'] ?? 'adult',
+                'seat_number'      => $seatNum,
+                'price'            => $p['price']
             ]);
         }
 
@@ -267,5 +319,68 @@ class BookingService
             'final_amount' => $finalAmount,
             'message'      => 'Booking berhasil dibuat!'
         ];
+    }
+
+    /**
+     * Assign / Change seats for passengers after payment in Kelola Pesanan
+     */
+    public function assignSeatsAfterPayment(string $bookingCode, array $assignments): array
+    {
+        $booking = $this->bookingModel->where('booking_code', $bookingCode)->first();
+        if (!$booking) {
+            return ['success' => false, 'message' => 'Data pesanan tidak ditemukan.'];
+        }
+
+        if ($booking['payment_status'] !== 'paid') {
+            return ['success' => false, 'message' => 'Pemilihan kursi hanya dapat dilakukan setelah pembayaran dikonfirmasi.'];
+        }
+
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        $ticketModel = new \App\Models\TicketModel();
+
+        foreach ($assignments as $a) {
+            $passengerId = (int) ($a['passenger_id'] ?? 0);
+            $seatId      = (int) ($a['seat_id'] ?? 0);
+
+            if (!$passengerId || !$seatId) continue;
+
+            $seat = $this->seatModel->find($seatId);
+            if (!$seat) continue;
+
+            // Check if seat is already booked by another passenger on the same trip
+            $taken = $db->table('booking_passengers bp')
+                ->join('bookings b', 'b.id = bp.booking_id')
+                ->where('b.trip_id', $booking['trip_id'])
+                ->where('bp.seat_id', $seatId)
+                ->where('bp.id !=', $passengerId)
+                ->where('b.payment_status', 'paid')
+                ->countAllResults();
+
+            if ($taken > 0) {
+                $db->transRollback();
+                return ['success' => false, 'message' => "Kursi {$seat['seat_number']} sudah dipilih oleh penumpang lain."];
+            }
+
+            // Update passenger table
+            $this->passengerModel->update($passengerId, [
+                'seat_id'     => $seatId,
+                'seat_number' => $seat['seat_number']
+            ]);
+
+            // Update ticket table
+            $ticketModel->where('passenger_id', $passengerId)->set([
+                'seat_number' => $seat['seat_number']
+            ])->update();
+        }
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return ['success' => false, 'message' => 'Gagal memperbarui nomor kursi. Silakan coba lagi.'];
+        }
+
+        return ['success' => true, 'message' => 'Nomor kursi berhasil diperbarui!'];
     }
 }

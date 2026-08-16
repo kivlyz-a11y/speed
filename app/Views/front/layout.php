@@ -37,12 +37,11 @@
                     </button>
                     <div class="collapse navbar-collapse" id="bmkNav">
                         <ul class="navbar-nav pelni-nav-menu mx-auto">
-                            <li class="nav-item"><a class="nav-link" href="<?= base_url() ?>">TENTANG KAMI</a></li>
-                            <li class="nav-item"><a class="nav-link active" href="<?= base_url('search?origin_id=1&destination_id=2') ?>">RESERVASI TIKET</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#popular-routes">LAYANAN</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#galeri">GALERI</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#berita">BERITA</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+                            <li class="nav-item"><a class="nav-link <?= (url_is('/')) ? 'active' : '' ?>" href="<?= base_url() ?>">BERANDA</a></li>
+                            <li class="nav-item"><a class="nav-link <?= (url_is('search*')) ? 'active' : '' ?>" href="<?= base_url('search?origin_id=1&destination_id=2') ?>">RESERVASI TIKET</a></li>
+                            <li class="nav-item"><a class="nav-link <?= (url_is('booking/manage*')) ? 'active' : '' ?>" href="<?= base_url('booking/manage') ?>"><i class="bi bi-ticket-perforated me-1 text-warning"></i> KELOLA PESANAN</a></li>
+                            <li class="nav-item"><a class="nav-link" href="<?= base_url('#popular-routes') ?>">LAYANAN</a></li>
+                            <li class="nav-item"><a class="nav-link" href="<?= base_url('#faq') ?>">FAQ</a></li>
                         </ul>
                     </div>
                 </nav>

@@ -231,19 +231,28 @@ class MasterController extends BaseController
         $db = \Config\Database::connect();
         $schedules = $db->table('schedules sch')
             ->select('sch.*, sb.name as boat_name, c.name as captain_name,
-                      loc1.city as origin_city, loc2.city as destination_city')
+                      loc1.name as origin_name, loc1.city as origin_city, loc2.name as destination_name, loc2.city as destination_city')
             ->join('speed_boats sb', 'sb.id = sch.speed_boat_id')
             ->join('routes r', 'r.id = sch.route_id')
             ->join('locations loc1', 'loc1.id = r.origin_location_id')
             ->join('locations loc2', 'loc2.id = r.destination_location_id')
             ->join('captains c', 'c.id = sch.captain_id', 'left')
+            ->where('sch.deleted_at IS NULL')
+            ->orderBy('sch.id', 'DESC')
+            ->get()->getResultArray();
+
+        $routes = $db->table('routes r')
+            ->select('r.*, loc1.name as origin_name, loc1.city as origin_city, loc2.name as destination_name, loc2.city as destination_city')
+            ->join('locations loc1', 'loc1.id = r.origin_location_id')
+            ->join('locations loc2', 'loc2.id = r.destination_location_id')
+            ->where('r.deleted_at IS NULL')
             ->get()->getResultArray();
 
         return view('admin/master/schedules', [
             'title'     => 'Master Jadwal Keberangkatan',
             'schedules' => $schedules,
             'boats'     => $this->boatModel->findAll(),
-            'routes'    => $this->routeModel->findAll(),
+            'routes'    => $routes,
             'captains'  => $this->captainModel->findAll()
         ]);
     }
@@ -284,6 +293,38 @@ class MasterController extends BaseController
         }
 
         return redirect()->to('admin/master/schedules')->with('success', 'Master Jadwal & Trip Harian berhasil dibuat!');
+    }
+
+    public function updateSchedule(int $id)
+    {
+        $schedule = $this->scheduleModel->find($id);
+        if (!$schedule) {
+            return redirect()->back()->with('error', 'Data master jadwal tidak ditemukan.');
+        }
+
+        $this->scheduleModel->update($id, [
+            'route_id'       => (int) $this->request->getPost('route_id'),
+            'speed_boat_id'  => (int) $this->request->getPost('speed_boat_id'),
+            'captain_id'     => (int) ($this->request->getPost('captain_id') ?: 1),
+            'departure_time' => $this->request->getPost('departure_time'),
+            'arrival_time'   => $this->request->getPost('arrival_time'),
+            'adult_price'    => (float) $this->request->getPost('adult_price'),
+            'child_price'    => (float) ($this->request->getPost('child_price') ?: 0),
+            'status'         => $this->request->getPost('status') ?? 'active'
+        ]);
+
+        return redirect()->to('admin/master/schedules')->with('success', 'Data Master Jadwal berhasil diperbarui!');
+    }
+
+    public function deleteSchedule(int $id)
+    {
+        $schedule = $this->scheduleModel->find($id);
+        if (!$schedule) {
+            return redirect()->back()->with('error', 'Data master jadwal tidak ditemukan.');
+        }
+
+        $this->scheduleModel->delete($id);
+        return redirect()->to('admin/master/schedules')->with('success', 'Master Jadwal berhasil dihapus.');
     }
 
     public function vouchers()

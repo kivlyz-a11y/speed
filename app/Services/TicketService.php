@@ -61,7 +61,7 @@ class TicketService
     {
         $db = \Config\Database::connect();
         $booking = $db->table('bookings b')
-            ->select('b.*, t.trip_code, t.trip_date, t.departure_time, t.arrival_time, 
+            ->select('b.*, p.transaction_time, p.payment_method, t.trip_code, t.trip_date, t.departure_time, t.arrival_time, 
                       sb.name as boat_name, sb.code as boat_code,
                       loc1.name as origin_name, loc1.city as origin_city, loc2.name as destination_name, loc2.city as destination_city')
             ->join('trips t', 't.id = b.trip_id')
@@ -70,19 +70,44 @@ class TicketService
             ->join('routes r', 'r.id = sch.route_id')
             ->join('locations loc1', 'loc1.id = r.origin_location_id')
             ->join('locations loc2', 'loc2.id = r.destination_location_id')
+            ->join('payments p', 'p.booking_id = b.id', 'left')
             ->where('b.booking_code', $bookingCode)
             ->get()->getRowArray();
 
         if (!$booking) return null;
 
         $tickets = $db->table('tickets t')
-            ->select('t.*, bp.passenger_name, bp.passenger_phone, bp.passenger_type, bp.price')
+            ->select('t.*, bp.passenger_name, bp.passenger_gender, bp.passenger_nik, bp.passenger_phone, bp.passenger_type, bp.price')
             ->join('booking_passengers bp', 'bp.id = t.passenger_id')
             ->where('t.booking_id', $booking['id'])
             ->get()->getResultArray();
 
-        foreach ($tickets as &$t) {
-            $t['qr_data_uri'] = QrCodeHelper::generateDataUri($t['ticket_code']);
+        if (empty($tickets)) {
+            $passengers = $db->table('booking_passengers bp')
+                ->where('bp.booking_id', $booking['id'])
+                ->get()->getResultArray();
+
+            $tickets = [];
+            foreach ($passengers as $p) {
+                $tickets[] = [
+                    'id'               => 0,
+                    'passenger_id'     => $p['id'],
+                    'ticket_code'      => 'UNPAID-' . $booking['booking_code'],
+                    'passenger_name'   => $p['passenger_name'],
+                    'passenger_gender' => $p['passenger_gender'] ?? 'male',
+                    'passenger_nik'    => $p['passenger_nik'],
+                    'passenger_phone'  => $p['passenger_phone'],
+                    'passenger_type'   => $p['passenger_type'],
+                    'seat_number'      => $p['seat_number'] ?? 'Belum Dipilih',
+                    'price'            => $p['price'],
+                    'status'           => 'pending_payment',
+                    'qr_data_uri'      => QrCodeHelper::generateDataUri($booking['booking_code'])
+                ];
+            }
+        } else {
+            foreach ($tickets as &$t) {
+                $t['qr_data_uri'] = QrCodeHelper::generateDataUri($t['ticket_code']);
+            }
         }
 
         $booking['tickets'] = $tickets;

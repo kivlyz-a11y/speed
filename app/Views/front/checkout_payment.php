@@ -106,21 +106,42 @@
 
 <?= $this->endSection() ?>
 
+<?php 
+$expiredTimestamp = !empty($booking['expired_at']) ? strtotime($booking['expired_at']) : (time() + 1800);
+$nowTimestamp     = time();
+$remainingSeconds = max(0, $expiredTimestamp - $nowTimestamp);
+?>
+
 <?= $this->section('scripts') ?>
 <!-- Midtrans Snap JS (Sandbox mode) -->
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?= env('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-DUMMY_KEY') ?>"></script>
 <script>
-    // Countdown Timer 30 minutes
-    let duration = 30 * 60;
+    // Real Remaining Seconds from Server expired_at timestamp
+    let duration = <?= (int) $remainingSeconds ?>;
     const timerDisplay = document.getElementById('countdownTimer');
     
-    const interval = setInterval(() => {
+    function updateTimer() {
+        if (duration <= 0) {
+            timerDisplay.innerText = "EXPIRED";
+            const payBtn = document.getElementById('payButton');
+            if (payBtn) payBtn.disabled = true;
+            return;
+        }
         const minutes = Math.floor(duration / 60);
         const seconds = duration % 60;
         timerDisplay.innerText = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        if (--duration < 0) {
+        duration--;
+    }
+
+    updateTimer();
+    const interval = setInterval(() => {
+        if (duration < 0) {
             clearInterval(interval);
             timerDisplay.innerText = "EXPIRED";
+            const payBtn = document.getElementById('payButton');
+            if (payBtn) payBtn.disabled = true;
+        } else {
+            updateTimer();
         }
     }, 1000);
 
