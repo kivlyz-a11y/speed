@@ -1,20 +1,15 @@
 FROM php:8.3-apache
 
-# Install system dependencies & PHP extensions required for CI4, GD (QR), DomPDF, PhpSpreadsheet
+# Install mlocati PHP extension installer helper
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+
+# Install system utilities & required PHP extensions using pre-compiled binaries / fast installer
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libzip-dev \
-    libicu-dev \
-    libonig-dev \
-    libxml2-dev \
     zip \
     unzip \
     git \
     curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mysqli gd zip intl mbstring xml opcache \
+    && install-php-extensions pdo_mysql mysqli gd zip intl opcache \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite & add Port 8080 support
@@ -26,12 +21,18 @@ COPY .docker/apache-ci4.conf /etc/apache2/sites-available/000-default.conf
 # Set working directory
 WORKDIR /var/www/html
 
+# Install Composer binaries
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Copy composer manifest first to leverage Docker build layer caching
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
 # Copy application source code
 COPY . /var/www/html
 
-# Install Composer dependencies
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Optimize autoloader after app code copy
+RUN composer dump-autoload --optimize --no-dev
 
 # Set permissions for CodeIgniter 4 writable directory
 RUN chown -R www-data:www-data /var/www/html \

@@ -44,4 +44,10 @@ DB_AUTO_MIGRATE=true
 
 ---
 
-Aplikasi CodeIgniter 4 (`App.php` & `Database.php`) sudah diperbarui untuk otomatis mendeteksi format `DB_*` dan `database_default_*` secara sempurna.
+## ⚠️ Trouble Shooting Database: `Unknown database 'speed_12334'`
+
+Jika terjadi error `Main connection [MySQLi]: Unknown database 'speed_12334'` saat deployment:
+1. `.docker/entrypoint.sh` telah diperbarui untuk **otomatis membuat database** (via `CREATE DATABASE IF NOT EXISTS`) jika database belum ada pada server MySQL saat container dinyalakan.
+2. Pastikan `DB_USER` yang Anda gunakan di Coolify memiliki hak akses untuk membuat database (atau jika menggunakan database yang sudah dibuat sebelumnya, pastikan nama `DB_NAME` di Coolify sesuai persis dengan nama database yang ada di server MySQL Anda).
+
+Aplikasi CodeIgniter 4 (`App.php` & `Database.php`) dan `.docker/entrypoint.sh` sudah diperbarui untuk otomatis mendeteksi format `DB_*` dan `database_default_*` serta memastikan database telah dibuat secara otomatis sebelum menjalankan `spark migrate`.
