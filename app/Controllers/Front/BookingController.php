@@ -70,7 +70,7 @@ class BookingController extends BaseController
 
         $locationModel = new \App\Models\LocationModel();
         return view('front/search_results', [
-            'title'              => 'Hasil Pencarian Jadwal Speed Boat - BMK (Benuanta Mutiara Khatulistiwa)',
+            'title'              => 'Hasil Pencarian Jadwal Speed Boat - SB ANDALAS',
             'trips'              => $trips,
             'locations'          => $locationModel->findAll(),
             'search_origin'      => $originId,

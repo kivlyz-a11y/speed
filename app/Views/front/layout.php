@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'BMK (Benuanta Mutiara Khatulistiwa) - Pemesanan Tiket Speed Boat Resmi') ?></title>
+    <title><?= esc($title ?? 'SB ANDALAS - Pemesanan Tiket Speed Boat Resmi') ?></title>
     
     <link rel="manifest" href="<?= base_url('manifest.json') ?>">
     <meta name="theme-color" content="#0B3B60">
@@ -24,10 +24,10 @@
     <header class="sticky-top pelni-header-white">
         <div class="container-fluid px-lg-5">
             <div class="d-flex justify-content-between align-items-center">
-                <!-- Left: BMK Brand Logo -->
+                <!-- Left: ANDALAS Brand Logo -->
                 <a class="pelni-brand-logo" href="<?= base_url() ?>">
-                    <i class="bi bi-compass-fill"></i> BMK
-                    <span class="d-none d-xl-inline-block ms-2 text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">BENUANTA MUTIARA KHATULISTIWA</span>
+                    <i class="bi bi-compass-fill"></i> ANDALAS
+                    <span class="d-none d-xl-inline-block ms-2 text-muted fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">SPEED EXPRESS</span>
                 </a>
 
                 <!-- Center: Main Navigation Menu -->
@@ -123,9 +123,9 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-4">
-                    <h4 class="fw-bold text-white mb-2"><i class="bi bi-compass-fill text-primary me-2"></i>BMK</h4>
-                    <h6 class="text-white-50 small mb-3">BENUANTA MUTIARA KHATULISTIWA</h6>
-                    <p class="text-secondary small">PT Benuanta Mutiara Khatulistiwa (BMK) - Layanan Pemesanan Tiket Speed Boat Penyeberangan Cepat, Aman, dan Terpercaya Melayani Rute Bulungan dan Tarakan.</p>
+                    <h4 class="fw-bold text-white mb-2"><i class="bi bi-compass-fill text-primary me-2"></i>ANDALAS</h4>
+                    <h6 class="text-white-50 small mb-3">SB ANDALAS</h6>
+                    <p class="text-secondary small">SB ANDALAS - Layanan Pemesanan Tiket Speed Boat Penyeberangan Cepat, Aman, dan Terpercaya Melayani Rute Bulungan dan Tarakan.</p>
                 </div>
                 <div class="col-lg-2">
                     <h6 class="text-uppercase fw-bold mb-3 text-warning">Layanan</h6>
@@ -141,7 +141,7 @@
                     <ul class="list-unstyled text-secondary small">
                         <li class="mb-2"><i class="bi bi-telephone-fill text-warning me-2"></i> Call Center: (021) 162</li>
                         <li class="mb-2"><i class="bi bi-whatsapp text-success me-2"></i> WhatsApp: 0811-162-1-162</li>
-                        <li class="mb-2"><i class="bi bi-envelope-fill me-2"></i> Email: kontak@bmk.co.id</li>
+                        <li class="mb-2"><i class="bi bi-envelope-fill me-2"></i> Email: kontak@andalas.co.id</li>
                     </ul>
                 </div>
                 <div class="col-lg-3">
@@ -156,7 +156,7 @@
             </div>
             <hr class="border-secondary my-4 opacity-50">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-secondary small">
-                <p class="mb-0">&copy; <?= date('Y') ?> PT Benuanta Mutiara Khatulistiwa (BMK). All rights reserved.</p>
+                <p class="mb-0">&copy; <?= date('Y') ?> SB ANDALAS. All rights reserved.</p>
                 <p class="mb-0">Speed Express Transport</p>
             </div>
         </div>

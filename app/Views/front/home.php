@@ -17,18 +17,17 @@
                         </div>
                         <div>
                             <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-2 rounded-pill">
-                                <i class="bi bi-shield-check me-1"></i> Standar Keselamatan Pelayaran BMK
+                                <i class="bi bi-shield-check me-1"></i> Standar Keselamatan Pelayaran ANDALAS
                             </span>
                         </div>
                     </div>
 
                     <h1 class="pelni-hero-title mb-4">
-                        Nyaman <span>Berlayar</span> dengan Fasilitas <br>
-                        Speed Boat Bagasi sampai <strong>40 kg</strong>
+                        Nikmati <span>Perjalanan Penyeberangan Cepat</span>, Bebas Antre di Dermaga dengan E-Ticket QR Code Resmi <strong>SB ANDALAS</strong>
                     </h1>
 
                     <p class="lead text-secondary mb-4 max-w-600">
-                        Nikmati perjalanan penyeberangan cepat, bebas antre di dermaga dengan E-Ticket QR Code resmi PT Benuanta Mutiara Khatulistiwa (BMK) Speed Express.
+                        Layanan pemesanan tiket resmi speed boat online cepat, mudah, dan terpercaya dengan konfirmasi instan serta transaksi aman.
                     </p>
 
                     <div class="d-flex flex-wrap gap-3 align-items-center mb-4">
@@ -174,7 +173,7 @@
 
                             <!-- Submit Button: CARI PELAYARAN -->
                             <button type="submit" class="btn-cari-pelayaran">
-                                <i class="bi bi-search me-2"></i> CARI PELAYARAN BMK
+                                <i class="bi bi-search me-2"></i> CARI PELAYARAN ANDALAS
                             </button>
                         </form>
                     </div>
@@ -187,7 +186,7 @@
                         <form action="<?= base_url('checkout/mock-pay/') ?>" method="GET" id="manageOrderForm">
                             <div class="mb-3">
                                 <label class="field-label-pelni">Kode Booking / E-Ticket</label>
-                                <input type="text" id="manageBookingCode" class="pelni-input-field text-uppercase fw-bold" placeholder="Contoh: BMK-2026-XXXX" required>
+                                <input type="text" id="manageBookingCode" class="pelni-input-field text-uppercase fw-bold" placeholder="Contoh: ANDALAS-2026-XXXX" required>
                             </div>
 
                             <div class="mb-4">
@@ -201,7 +200,7 @@
                         </form>
 
                         <div class="alert alert-info border-0 rounded-3 mt-4 small">
-                            <i class="bi bi-info-circle-fill me-1"></i> Perlu bantuan refund atau cetak ulang e-ticket? Hubungi Contact Center BMK di <strong>(021) 162</strong>.
+                            <i class="bi bi-info-circle-fill me-1"></i> Perlu bantuan refund atau cetak ulang e-ticket? Hubungi Contact Center ANDALAS di <strong>(021) 162</strong>.
                         </div>
                     </div>
                 </div>
@@ -275,8 +274,8 @@
     <div class="container">
         <div class="text-center max-w-700 mx-auto mb-5">
             <span class="badge bg-primary bg-opacity-10 text-primary fw-bold mb-2"><i class="bi bi-compass me-1"></i> RUTE JADWAL PELAYARAN</span>
-            <h3 class="fw-bold text-navy">Jadwal Penyeberangan Speed Boat BMK Aktif</h3>
-            <p class="text-secondary">Pilihan rute penyeberangan cepat resmi BMK yang beroperasi secara rutin setiap hari</p>
+            <h3 class="fw-bold text-navy">Jadwal Penyeberangan Speed Boat ANDALAS Aktif</h3>
+            <p class="text-secondary">Pilihan rute penyeberangan cepat resmi ANDALAS yang beroperasi secara rutin setiap hari</p>
         </div>
 
         <div class="row g-4">
@@ -293,7 +292,7 @@
                             <div class="position-relative">
                                 <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=500&auto=format&fit=crop&q=80" class="card-img-top" alt="<?= esc($pr['origin_name']) ?>" style="height: 180px; object-fit: cover;">
                                 <div class="position-absolute top-0 end-0 bg-warning text-dark font-extrabold px-3 py-1 m-3 rounded-pill small shadow">
-                                    <i class="bi bi-lightning-fill me-1"></i> Speed Boat BMK
+                                    <i class="bi bi-lightning-fill me-1"></i> Speed Boat ANDALAS
                                 </div>
                             </div>
                             <div class="card-body p-4">
@@ -324,12 +323,12 @@
             <div class="accordion-item border-0 mb-3 pelni-card">
                 <h2 class="accordion-header">
                     <button class="accordion-button fw-bold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                        <i class="bi bi-qr-code me-2 text-primary"></i> Bagaimana alur pemesanan tiket online dan check-in di dermaga BMK?
+                        <i class="bi bi-qr-code me-2 text-primary"></i> Bagaimana alur pemesanan tiket online dan check-in di dermaga ANDALAS?
                     </button>
                 </h2>
                 <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
-                        Cukup cari rute pelayaran pada form di sebelah kanan, tentukan jumlah penumpang Laki-laki dan Perempuan, pilih nomor kursi favorit Anda di denah kapal, lalu selesaikan pembayaran via Midtrans. E-Ticket QR Code akan otomatis terbit untuk di-scan petugas boarding BMK.
+                        Cukup cari rute pelayaran pada form di sebelah kanan, tentukan jumlah penumpang Laki-laki dan Perempuan, pilih nomor kursi favorit Anda di denah kapal, lalu selesaikan pembayaran via Midtrans. E-Ticket QR Code akan otomatis terbit untuk di-scan petugas boarding ANDALAS.
                     </div>
                 </div>
             </div>
@@ -355,7 +354,7 @@
                 </h2>
                 <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                     <div class="accordion-body text-secondary">
-                        Anda dapat menghubungi Contact Center BMK melalui <strong>(021) 162</strong> atau WhatsApp CS di <strong>0811-162-1-162</strong> (layanan 24 jam).
+                        Anda dapat menghubungi Contact Center ANDALAS melalui <strong>(021) 162</strong> atau WhatsApp CS di <strong>0811-162-1-162</strong> (layanan 24 jam).
                     </div>
                 </div>
             </div>

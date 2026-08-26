@@ -8,7 +8,7 @@
     <div class="cititrans-card p-4 mb-4 bg-primary text-white">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
             <div>
-                <span class="badge bg-warning text-dark fw-bold mb-2"><i class="bi bi-compass me-1"></i> PELAYARAN SPEED BOAT BMK</span>
+                <span class="badge bg-warning text-dark fw-bold mb-2"><i class="bi bi-compass me-1"></i> PELAYARAN SPEED BOAT ANDALAS</span>
                 <h3 class="fw-bold mb-1">
                     <?= esc($trips[0]['origin_name'] ?? 'Kota Asal') ?> &rarr; <?= esc($trips[0]['destination_name'] ?? 'Kota Tujuan') ?>
                 </h3>

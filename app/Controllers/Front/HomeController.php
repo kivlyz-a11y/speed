@@ -56,7 +56,7 @@ class HomeController extends BaseController
         }
 
         $data = [
-            'title'         => 'BMK (Benuanta Mutiara Khatulistiwa) - Pemesanan Tiket Speed Boat Cepat',
+            'title'         => 'SB ANDALAS - Pemesanan Tiket Speed Boat Cepat',
             'locations'     => $locations,
             'popularRoutes' => $popularRoutes,
             'maleCount'     => $maleCount,
